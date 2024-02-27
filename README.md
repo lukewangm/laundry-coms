@@ -10,5 +10,12 @@ It was easy to make the page and incorporate a timer that ticks from 35 minutes 
 
 # Creating the timer
 
-I created a separate javascript file to contain the two functions that start and reset the timers.
+I created a separate javascript file to contain the two functions that start and reset the timers. 
+
+# Sychronization of timers
+
+I did not expect it to be difficult to make sure the timers run in sychronization. I started with hosting this webpage on Vercel and I thought that the instances of timers would be synced across the website, but I've come to realize that I will need to create a server that runs on the website.
+
+https://stackoverflow.com/questions/67855874/how-to-synchronise-a-timer-for-everyone-client
+
 
