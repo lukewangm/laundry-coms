@@ -8,11 +8,11 @@ import Messages from "./pages/Messages.jsx";
 function App() {
   return (
       <div>
-          <img src={logo} className="App-logo" alt="logo" width={100} height={100}/>
+          {/*<img src={logo} className="App-logo" alt="logo" width={100} height={100}/>*/}
           <Routes>
               <Route path="/" element={<Home/>}/>
-              <Route path="/" element={<Timers/>}/>
-              <Route path="/" element={<Messages/>}/>
+              <Route path="/Timers" element={<Timers/>}/>
+              <Route path="/Messages" element={<Messages/>}/>
           </Routes>
       </div>
   );

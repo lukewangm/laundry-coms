@@ -5,6 +5,7 @@ function Home() {
     const navigate = useNavigate();
     return (
         <div>
+            Home
             <button onClick={() => navigate("/Messages")}>Go to Messages</button>
             <button onClick={() => navigate("/Timers")}>Go to Timers</button>
         </div>
