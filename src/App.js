@@ -7,10 +7,10 @@ import Messages from "./pages/Messages.jsx";
 
 function App() {
     const socket = new WebSocket('ws://localhost:3000');
+
     socket.onopen = function(event) {
         socket.send(JSON.stringify({ type: "requestTimer" }));
     };
-
   return (
       <div>
           {/*<img src={logo} className="App-logo" alt="logo" width={100} height={100}/>*/}
