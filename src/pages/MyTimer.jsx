@@ -1,6 +1,6 @@
 import React, { useState, useRef } from "react";
 
-const MyTimer = ({initialMinutes = 45}) => {
+const MyTimer = ({timerID = 0, initialMinutes = 45}) => {
     const Ref = useRef(null);
     const [timer, setTimer] = useState(`00:${initialMinutes}:00`);
     const [isActive, setIsActive] = useState(false);
@@ -47,6 +47,16 @@ const MyTimer = ({initialMinutes = 45}) => {
         Ref.current = null; // Reset the ref
         setTimer(`00:${initialMinutes}:00`); // Reset the timer display
         setIsActive(false); // Mark the timer as inactive
+        if (socket && socket.readyState === WebSocket.OPEN) {
+            const timerMsg = {
+                id: timerID,
+                endTime: " ",
+                reset: true
+            };
+            socket.send(JSON.stringify(timerMsg));
+        } else {
+            console.error('WebSocket is not open. Message not sent.');
+        }
     };
 
     const startButtonHandler = () => {
@@ -56,9 +66,44 @@ const MyTimer = ({initialMinutes = 45}) => {
             clearTimer(deadTime); // Start the timer
             if (socket && socket.readyState === WebSocket.OPEN) {
                 const deadTimeString = deadTime.toISOString();
-                socket.send(JSON.stringify({ endTime: deadTimeString }));
+                const timerMsg = {
+                    id: timerID,
+                    endTime: deadTimeString,
+                    reset: false,
+                    newClient: false
+                };
+                socket.send(JSON.stringify(timerMsg));
             } else {
                 console.error('WebSocket is not open. Message not sent.');
+            }
+        }
+    };
+
+    // socket.onopen = function() {
+    //     console.log('Connection established');
+    
+    //     // Send a message to the server requesting the current timer information
+    //     const message = JSON.stringify({
+    //         type: 'request',
+    //         action: 'getTimerInfo'
+    //     });
+    
+    //     socket.send(message);
+    // };
+
+    socket.onmessage = function(event) {
+        console.log('Message from server:', event.data);
+        const message = JSON.parse(event.data);
+        if(message.id === timerID){
+            if(message.reset === true){
+                clearInterval(Ref.current); // Clear the existing interval
+                Ref.current = null; // Reset the ref
+                setTimer(`00:${initialMinutes}:00`); // Reset the timer display
+                setIsActive(false); // Mark the timer as inactive
+            }
+            else{
+                const deadTime = new Date(message.endTime); // Convert ISO string back to Date object
+                clearTimer(deadTime);
             }
         }
     };
@@ -73,3 +118,18 @@ const MyTimer = ({initialMinutes = 45}) => {
 };
 
 export default MyTimer;
+
+    // // Event listener for receiving messages from the server
+    // socket.onmessage = function(event) {
+    //     console.log('Message from server:', event.data);
+    // };
+
+    // // Event listener for handling possible errors
+    // socket.onerror = function(error) {
+    //     console.error('WebSocket error:', error);
+    // };
+
+    // // Event listener for when the connection is closed
+    // socket.onclose = function(event) {
+    //     console.log('Connection is closed', event);
+    // };

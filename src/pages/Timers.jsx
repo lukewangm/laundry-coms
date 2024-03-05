@@ -1,18 +1,21 @@
 import React from 'react';
 import MyTimer from './MyTimer'; // Adjust the import path based on your file structure
+import {useNavigate} from "react-router-dom";
 
 const App = () => {
+    const navigate = useNavigate();
+    
     return (
         <div style={{ width: "300px", margin: "auto" }}>
+            <button onClick={() => navigate("/")}>Go to Home</button>
             <div>
-                <MyTimer initialMinutes={35} />
-                <MyTimer initialMinutes={45} />
+                <MyTimer timerID = {0} initialMinutes={35} />
+                <MyTimer timerID = {1} initialMinutes={45} />
             </div>
             <div>
-                <MyTimer initialMinutes={35} />
-                <MyTimer initialMinutes={45} />
+                <MyTimer timerID = {2} initialMinutes={35} />
+                <MyTimer timerID = {3} initialMinutes={45} />
             </div>
-
         </div>
     );
 };

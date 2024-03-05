@@ -1,27 +1,45 @@
 const WebSocket = require('ws');
 const server = new WebSocket.Server({port: 3000});
 
-// Function to send the current time to all connected and ready clients
-function sendCurrentTime() {
-    const currentTime = new Date().toTimeString(); // Get current time as a string
-    server.clients.forEach((client) => {
-        if(client.readyState === WebSocket.OPEN) {
-            client.send(currentTime); // Send the current time to each client
-        }
-    });
-}
+var timerEndTimes = [null,null,null,null];
 
-// Call sendCurrentTime every second (1000 milliseconds)
-setInterval(sendCurrentTime, 1000);
+const sendCurrentTime = () => {
+    var i = 0;
+    timerEndTimes.forEach( () => {
+        if(timerEndTimes[i] != null){
+                const timerMsg = {
+                    id: i,
+                    endTime: timerEndTimes[i],
+                    reset: false,
+                }
+                server.clients.forEach((client) => {
+                    client.send(JSON.stringify(timerMsg));      
+                });  
+        }
+        i = i+1 ;
+    });
+};
+
+// setInterval(sendCurrentTime, 5000);
 
 // https://www.linkedin.com/pulse/real-time-data-synchronization-react-websockets-fidisys/
 server.on('connection', (socket) => {
     socket.on('message', (message) => {
-        server.clients.forEach((client) => {
-            if(client !== socket && client.readyState === WebSocket.OPEN) {
-                client.send(message);
-            }
-        });
+        const timerMsg = JSON.parse(message);
+
+        if(timerMsg.type == "requestTimer"){
+            sendCurrentTime();
+        }
+        else{
+            console.log('Received timer:', timerMsg.id);
+            timerEndTimes[timerMsg.id] = timerMsg.endTime;
+            console.log(timerEndTimes[timerMsg.id]);
+            server.clients.forEach((client) => {
+                if(client !== socket && client.readyState === WebSocket.OPEN) {
+                    client.send(message);
+                }
+            });       
+        }
     });
 });
 
