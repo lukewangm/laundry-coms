@@ -7,7 +7,7 @@ import {useEffect} from "react";
 
 function App() {
     useEffect(() => {
-        const socket = new WebSocket('ws://localhost:3000');
+        const socket = new WebSocket('ws://34.226.198.62:3000');
 
         socket.onopen = function (event) {
             socket.send(JSON.stringify({type: "requestTimer"}));
