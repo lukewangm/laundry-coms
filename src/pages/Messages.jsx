@@ -26,7 +26,7 @@ function Messages() {
 
     return (
         <div className="chat-app">
-            Messages
+            <h1>Messages</h1>
             <button onClick={() => navigate("/")}>Go to Home</button>
             <div className="messages">
                 {messages.map((message, index) => (
@@ -41,6 +41,7 @@ function Messages() {
                 />
                 <button onClick={sendMessage}>Send</button>
             </div>
+
         </div>
     );
 }
