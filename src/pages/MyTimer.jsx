@@ -4,7 +4,9 @@ const MyTimer = ({timerID = 0, initialMinutes = 45}) => {
     const Ref = useRef(null);
     const [timer, setTimer] = useState(`00:${initialMinutes}:00`);
     const [isActive, setIsActive] = useState(false);
+    // const socket = new WebSocket('ws://localhost:3000');
     const socket = new WebSocket('ws://34.226.198.62:3000');
+
 
     const getTimeRemaining = (endtime) => {
         const total = Date.parse(endtime) - new Date();
@@ -79,18 +81,6 @@ const MyTimer = ({timerID = 0, initialMinutes = 45}) => {
         }
     };
 
-    // socket.onopen = function() {
-    //     console.log('Connection established');
-    
-    //     // Send a message to the server requesting the current timer information
-    //     const message = JSON.stringify({
-    //         type: 'request',
-    //         action: 'getTimerInfo'
-    //     });
-    
-    //     socket.send(message);
-    // };
-
     socket.onmessage = function(event) {
         console.log('Message from server:', event.data);
         const message = JSON.parse(event.data);
@@ -109,7 +99,7 @@ const MyTimer = ({timerID = 0, initialMinutes = 45}) => {
     };
 
     return (
-        <div style={{ margin: "10px", textAlign: "center" }}>
+        <div type="timer">
             <h2>{timer}</h2>
             <button onClick={startButtonHandler}>Start Timer</button>
             <button onClick={onClickReset}>Reset</button>
@@ -118,18 +108,3 @@ const MyTimer = ({timerID = 0, initialMinutes = 45}) => {
 };
 
 export default MyTimer;
-
-    // // Event listener for receiving messages from the server
-    // socket.onmessage = function(event) {
-    //     console.log('Message from server:', event.data);
-    // };
-
-    // // Event listener for handling possible errors
-    // socket.onerror = function(error) {
-    //     console.error('WebSocket error:', error);
-    // };
-
-    // // Event listener for when the connection is closed
-    // socket.onclose = function(event) {
-    //     console.log('Connection is closed', event);
-    // };
