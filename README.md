@@ -13,7 +13,7 @@ It correctly bundles React in production mode and optimizes the build for the be
 The build is minified and the filenames include the hashes.\
 Your app is ready to be deployed!
 
-### 'node src/server.js'
+### `node src/server.js`
 
 Starts the server locally, but the web sockets need be changed to reflect where the server is. 
 
