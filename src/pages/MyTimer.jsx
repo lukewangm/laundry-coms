@@ -5,7 +5,7 @@ const MyTimer = ({timerID = 0, initialMinutes = 45}) => {
     const [timer, setTimer] = useState(`00:${initialMinutes}:00`);
     const [isActive, setIsActive] = useState(false);
     // const socket = new WebSocket('ws://localhost:3000');
-    const socket = new WebSocket('wss://34.226.198.62:3000');
+    const socket = new WebSocket('ws://34.226.198.62:3000');
 
 
     const getTimeRemaining = (endtime) => {
