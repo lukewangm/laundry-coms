@@ -1,5 +1,6 @@
 import {useNavigate} from "react-router-dom";
 import React, { useState, useEffect } from 'react';
+import ResultBox from "./Result";
 
 function Messages() {
     const [messages, setMessages] = useState([
@@ -12,11 +13,21 @@ function Messages() {
     const [error, setError] = useState(null);
     const [stateInfo, setStateInfo] = useState({});
     const [tripPlanReady, setTripPlanReady] = useState(false);
+    const [tripPlan, setTripPlan] = useState(null);
 
     useEffect(() => {
-        // Optional: You can load initial messages from the backend here
-        // fetchMessages();
-    }, []);
+        if (tripPlanReady) {
+          // Do something specific when tripPlanReady is true
+          console.log("Trip plan is ready!");
+          sendWeather();
+        }
+        if (weatherData) {
+            // Use setState function to update the state properly
+            setStateInfo(prevState => ({ ...prevState, real_time_context: weatherData }));
+            sendFinalMessage();
+          }
+      }, [tripPlanReady, weatherData]);
+
 
     const sendWeather = async () => {
         try{
@@ -25,6 +36,14 @@ function Messages() {
             // Save the data as JSON (for example, to a file or variable)
             const jsonData = JSON.stringify(data, null, 2);
             console.log(jsonData);
+
+            // If successful, update the message list with the new message
+            if (response.ok) {
+                setWeatherData(jsonData); 
+                console.log(data);
+            } else {
+                console.error('Failed to send message:', data.error);
+            }
         }catch{}
     }
 
@@ -40,29 +59,49 @@ function Messages() {
             
             // If successful, update the message list with the new message
             if (response.ok) {
-                setSt(data); 
+                setStateInfo(data); 
+                console.log(data);
             } else {
                 console.error('Failed to send message:', data.error);
             }
         }catch{}
     }
 
-    const fetchMessages = async () => {
+    const sendFinalMessage = async () => {
         try {
-            const response = await fetch('http://127.0.0.1:5000/api/messages');
+            // Send the message to the backend via POST request
+            const response = await fetch('http://127.0.0.1:5000/api/generate_trip', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    state: stateInfo
+                }),
+            });
+    
             const data = await response.json();
-            setMessages(data.messages);
+    
+            // If successful, update the message list with the new message
+            if (response.ok) {
+                setStateInfo(data.state); // Update the state
+                setTripPlan(data.state.trip_plan); // Assuming `setTripPlan` is a React state setter
+            } else {
+                console.error('Failed to send message:', data.error);
+            }
         } catch (error) {
-            console.error("Error fetching messages:", error);
-        }
+            console.error("Error sending message:", error);
+        }   
     };
+    
+
 
     const sendMessage = async () => {
             setMessages(prevMessages => [...prevMessages, input])
             if (input.trim()) {
                 try {
                     // Send the message to the backend via POST request
-                    const response = await fetch('http://127.0.0.1:5000/api/messages', {
+                    const response = await fetch('http://127.0.0.1:5000/api/process_input', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -111,7 +150,7 @@ function Messages() {
                 <button onClick={sendWeather}>SendWeather</button>
                 <button onClick={initialize}>initialize</button>
             </div>
-
+            <div className = "resultBox">{tripPlan && <ResultBox tripPlan={tripPlan} />}</div>
         </div>
     );
 }
