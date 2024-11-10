@@ -8,6 +8,7 @@ function Home() {
             <h1>Home</h1>
             {/* <button onClick={() => navigate("/Messages")}>Go to Messages</button> */}
             <button onClick={() => navigate("/Timers")}>Go to Timers</button>
+            <button onClick={() => navigate("/Messages")}>Go to Messages</button>
         </div>
 
     )
