@@ -10,7 +10,8 @@ function Messages() {
     const [info, setInfo] = useState([]);
     const [weatherData, setWeatherData] = useState(null);
     const [error, setError] = useState(null);
-    const [AIInfo, setAIInfo] = useState({});
+    const [stateInfo, setStateInfo] = useState({});
+    const [tripPlanReady, setTripPlanReady] = useState(false);
 
     useEffect(() => {
         // Optional: You can load initial messages from the backend here
@@ -39,7 +40,7 @@ function Messages() {
             
             // If successful, update the message list with the new message
             if (response.ok) {
-                setAIInfo(data); 
+                setSt(data); 
             } else {
                 console.error('Failed to send message:', data.error);
             }
@@ -67,8 +68,8 @@ function Messages() {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({ 
-                            user_info: input,
-                            state: AIInfo
+                            user_input: input,
+                            state: stateInfo
                          }),
                     });
 
@@ -76,7 +77,9 @@ function Messages() {
                     
                     // If successful, update the message list with the new message
                     if (response.ok) {
-                        setMessages(prevMessages => [...prevMessages, data.message]); // Assuming the backend returns the new message
+                        setMessages(prevMessages => [...prevMessages, data.feedback]); // Assuming the backend returns the new message
+                        setStateInfo(data.state);
+                        setTripPlanReady(data.trip_plan_ready);
                         setInput(''); // Clear input field after sending
                     } else {
                         console.error('Failed to send message:', data.error);
