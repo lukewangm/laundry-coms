@@ -67,7 +67,7 @@ function Messages() {
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({ 
-                            text: input,
+                            user_info: input,
                             state: AIInfo
                          }),
                     });
