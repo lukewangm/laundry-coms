@@ -68,7 +68,7 @@ function Messages() {
                         },
                         body: JSON.stringify({ 
                             text: input,
-                            weatherInfo: info
+                            state: AIInfo
                          }),
                     });
 
